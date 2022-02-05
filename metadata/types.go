@@ -1,10 +1,5 @@
 package metadata
 
-// type Table struct {
-// 	Schema string `json:"schema"`
-// 	Name   string `json:"name"`
-// }
-
 type CustomRootFields struct {
 	Insert          string `json:"insert,omitempty"`
 	SelectAggregate string `json:"select_aggregate,omitempty"`
@@ -281,7 +276,7 @@ type ObjRelUsingManualMapping struct {
 }
 
 type ObjRelUsing struct {
-	ForeignKeyConstraintOn *IObjRelUsingChoice       `json:"foreign_key_constraint_on,omitempty"`
+	ForeignKeyConstraintOn IObjRelUsingChoice        `json:"foreign_key_constraint_on,omitempty"`
 	ManualConfiguration    *ObjRelUsingManualMapping `json:"manual_configuration,omitempty"`
 }
 
