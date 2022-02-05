@@ -1,9 +1,9 @@
 package metadata
 
-type Table struct {
-	Schema string `json:"schema"`
-	Name   string `json:"name"`
-}
+// type Table struct {
+// 	Schema string `json:"schema"`
+// 	Name   string `json:"name"`
+// }
 
 type CustomRootFields struct {
 	Insert          string `json:"insert,omitempty"`
@@ -65,9 +65,9 @@ type DeletePermission struct {
 }
 
 type ForeignKeyConstraintOn struct {
-	Column          string   `json:"column,omitempty"`
-	ExcludedColumns []string `json:"excluded_columns,omitempty"`
-	Table           Table    `json:"table,omitempty"`
+	Column          string     `json:"column,omitempty"`
+	ExcludedColumns []string   `json:"excluded_columns,omitempty"`
+	Table           ITableName `json:"table,omitempty"`
 }
 
 type UsingArray struct {
@@ -80,7 +80,7 @@ type ArrayRelationship struct {
 }
 
 type TableDefinition struct {
-	Table               Table                 `json:"table"`
+	Table               ITableName            `json:"table"`
 	Configuration       *TableConfiguration   `json:"configuration,omitempty"`
 	ObjectRelationships []*ObjectRelationship `json:"object_relationships,omitempty"`
 	InsertPermissions   []*InsertPermission   `json:"insert_permissions,omitempty"`
