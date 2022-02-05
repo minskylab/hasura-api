@@ -49,10 +49,11 @@ func NewHasuraClient(options ...HasuraClientOption) (*HasuraClient, error) {
 		return nil, errors.WithStack(err)
 	}
 
-	// logrus.Info(conf.Endpoint)
+	adminSecret := config.Getenv("HASURA_GRAPHQL_ADMIN_SECRET", "")
+
 	return &HasuraClient{
 		Client:      resty.New(),
-		adminSecret: config.Getenv("HASURA_GRAPHQL_ADMIN_SECRET", ""),
+		adminSecret: adminSecret,
 		Config:      conf,
 	}, nil
 }
