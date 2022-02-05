@@ -130,12 +130,6 @@ type RemoteSchemas struct {
 	Definition Definition `json:"definition"`
 }
 
-// type Metadata struct {
-// 	Version       int              `json:"version"`
-// 	Sources       []*Source        `json:"sources"`
-// 	RemoteSchemas []*RemoteSchemas `json:"remote_schemas"`
-// }
-
 // HAND-CRAFTED IMPLEMENTATIONS
 type PermissionColumns interface {
 	GetColumns() interface{}
@@ -230,13 +224,9 @@ func (c ColumnExp) GetBoolExp() interface{} {
 }
 
 type (
-	TableName        string
-	RelationshipName string
-	SourceName       string
-	SameTable        string
-	PGColumn         string
-	InsertOrder      string
-	RoleName         string
+	TableName   string
+	SameTable   string
+	InsertOrder string
 )
 
 type ITableName interface {
@@ -266,7 +256,7 @@ func (s SameTable) GetObjRelUsingChoice() interface{} {
 
 type RemoteTable struct {
 	Table  ITableName `json:"table"`
-	Column PGColumn   `json:"column"`
+	Column string     `json:"column"`
 }
 
 func (r RemoteTable) GetObjRelUsingChoice() interface{} {
@@ -291,7 +281,7 @@ type ObjRelUsing struct {
 
 type ArrRelUsingFKeyOn struct {
 	Table  ITableName `json:"table"`
-	Column PGColumn   `json:"column"`
+	Column string     `json:"column"`
 }
 
 type ArrRelUsingManualMapping struct {

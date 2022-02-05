@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	hasura_api "github.com/minskylab/hasura-api"
 	"github.com/minskylab/hasura-api/metadata"
 )
@@ -11,10 +13,6 @@ func main() {
 		panic(err)
 	}
 
-	client.Metadata.PgTrackTable(&metadata.PgTrackTableArgs{
-		Table: metadata.TableName("users"),
-	})
-
 	query := metadata.PgTrackTableQuery(&metadata.PgTrackTableArgs{
 		Table: metadata.QualifiedTableName{
 			Name:   "users",
@@ -22,8 +20,38 @@ func main() {
 		},
 	})
 
-	client.Metadata.Exec(query)
+	var res metadata.MetadataResponse
 
+	res, err = client.Metadata.Exec(query)
+	if err != nil {
+		panic(err)
+	}
+
+	switch res := res.(type) {
+	case metadata.SuccessResponse:
+		fmt.Println(res)
+	case metadata.BadRequestResponse,
+		metadata.UnauthorizedResponse,
+		metadata.InternalServerErrorResponse:
+		panic(res)
+	}
+
+	res, err = client.Metadata.PgTrackTable(&metadata.PgTrackTableArgs{
+		Table:  metadata.TableName("users"),
+		Source: "public",
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	switch res := res.(type) {
+	case metadata.SuccessResponse:
+		fmt.Println(res)
+	case metadata.BadRequestResponse,
+		metadata.UnauthorizedResponse,
+		metadata.InternalServerErrorResponse:
+		panic(res)
+	}
 	// source := metadata.SourceName("xxx")
 
 	// args1 := metadata.PgTrackTableArgs{
