@@ -25,7 +25,7 @@ type Using struct {
 }
 
 func (u Using) GetObjRelUsingChoice() interface{} {
-	return u
+	return u.ForeignKeyConstraintOn
 }
 
 type ObjectRelationship struct {
