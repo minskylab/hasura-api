@@ -19,7 +19,7 @@ type CustomRootFields struct {
 
 type TableConfiguration struct {
 	Identifier        string            `json:"identifier,omitempty"` // TO REVIEW: https://hasura.io/docs/latest/graphql/core/api-reference/syntax-defs.html#table-config
-	CustomRootFields  CustomRootFields  `json:"custom_root_fields,omitempty"`
+	CustomRootFields  *CustomRootFields `json:"custom_root_fields,omitempty"`
 	CustomName        string            `json:"custom_name,omitempty"`
 	CustomColumnNames map[string]string `json:"custom_column_names,omitempty"`
 }
