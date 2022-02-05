@@ -1,5 +1,7 @@
 package metadata
 
+type BulkArgs []MetadataQuery
+
 type PgAddSourceArgs struct{}
 
 type PgDropSourceArgs struct{}
