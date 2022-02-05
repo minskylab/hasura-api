@@ -29,6 +29,10 @@ type Using struct {
 	ForeignKeyConstraintOn interface{} `json:"foreign_key_constraint_on,omitempty"`
 }
 
+func (u Using) GetObjRelUsingChoice() interface{} {
+	return u
+}
+
 type ObjectRelationship struct {
 	Name  string `json:"name"`
 	Using Using  `json:"using"`
@@ -73,6 +77,8 @@ type ForeignKeyConstraintOn struct {
 type UsingArray struct {
 	ForeignKeyConstraintOn ForeignKeyConstraintOn `json:"foreign_key_constraint_on"`
 }
+
+// func (u UsingArray) Get
 
 type ArrayRelationship struct {
 	Name  string     `json:"name"`
