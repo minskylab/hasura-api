@@ -9,10 +9,10 @@ import (
 )
 
 type HasuraClient struct {
-	MetadataClient *MetadataClient
-	client         *resty.Client
-	Config         *HasuraConfig
-	adminSecret    string
+	Metadata    *MetadataClient
+	client      *resty.Client
+	Config      *HasuraConfig
+	adminSecret string
 }
 
 type MetadataClient struct {
@@ -22,6 +22,11 @@ type MetadataClient struct {
 type HasuraClientOptions struct {
 	configFilepaths []string
 	envFilepaths    []string
+
+	literals struct {
+		endpoint    string
+		adminSecret string
+	}
 }
 
 type HasuraClientOption func(*HasuraClientOptions)
@@ -38,11 +43,38 @@ func WithEnvFilepath(filepath ...string) HasuraClientOption {
 	}
 }
 
+func WithLiterals(hasuraEndpoint, hasuraAdminSecret string) HasuraClientOption {
+	return func(options *HasuraClientOptions) {
+		options.literals.endpoint = hasuraEndpoint
+		options.literals.adminSecret = hasuraAdminSecret
+	}
+}
+
+func newHasuraClientWithLiterals(hasuraEndpoint, hasuraAdminSecret string) (*HasuraClient, error) {
+	client := &HasuraClient{
+		client:      resty.New(),
+		adminSecret: hasuraAdminSecret,
+		Config: &HasuraConfig{
+			Endpoint: hasuraEndpoint,
+		},
+	}
+
+	client.Metadata = &MetadataClient{
+		HasuraClient: *client,
+	}
+
+	return client, nil
+}
+
 func NewHasuraClient(options ...HasuraClientOption) (*HasuraClient, error) {
 	optionsStruct := new(HasuraClientOptions)
 
 	for _, opt := range options {
 		opt(optionsStruct)
+	}
+
+	if optionsStruct.literals.endpoint != "" && optionsStruct.literals.adminSecret != "" {
+		return newHasuraClientWithLiterals(optionsStruct.literals.endpoint, optionsStruct.literals.adminSecret)
 	}
 
 	if err := godotenv.Load(optionsStruct.envFilepaths...); err != nil {
@@ -62,7 +94,7 @@ func NewHasuraClient(options ...HasuraClientOption) (*HasuraClient, error) {
 		Config:      conf,
 	}
 
-	client.MetadataClient = &MetadataClient{
+	client.Metadata = &MetadataClient{
 		HasuraClient: *client,
 	}
 
