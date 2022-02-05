@@ -38,48 +38,30 @@ type ID struct {
 	Eq string `json:"_eq"`
 }
 
-type PermissionInsert struct {
-	Check       map[string]interface{} `json:"check"`
+type InsertPermission struct {
+	Check       IBoolExp               `json:"check"`
 	Set         map[string]interface{} `json:"set,omitempty"`
-	Columns     []string               `json:"columns,omitempty"`
+	Columns     PermissionColumns      `json:"columns,omitempty"`
 	BackendOnly bool                   `json:"backend_only,omitempty"`
 }
 
-type InsertPermission struct {
-	Role       string           `json:"role,omitempty"`
-	Permission PermissionInsert `json:"permission,omitempty"`
-}
-
-type PermissionSelect struct {
-	Columns           []string               `json:"columns,omitempty"`
-	Filter            map[string]interface{} `json:"filter"`
-	AllowAggregations bool                   `json:"allow_aggregations,omitempty"`
-}
-
 type SelectPermission struct {
-	Role       string           `json:"role,omitempty"`
-	Permission PermissionSelect `json:"permission,omitempty"`
-}
-
-type PermissionUpdate struct {
-	Filter          map[string]interface{} `json:"filter"`
-	Check           map[string]interface{} `json:"check"`
-	Columns         []string               `json:"columns,omitempty"`
-	ExcludedColumns []string               `json:"excluded_columns,omitempty"`
+	Columns           PermissionColumns `json:"columns,omitempty"`
+	ComputedFields    []string          `json:"computed_fields,omitempty"`
+	Filter            IBoolExp          `json:"filter"`
+	Limit             *int              `json:"limit,omitempty"`
+	AllowAggregations bool              `json:"allow_aggregations,omitempty"`
 }
 
 type UpdatePermission struct {
-	Role       string           `json:"role,omitempty"`
-	Permission PermissionUpdate `json:"permission,omitempty"`
-}
-
-type PermissionDelete struct {
-	Filter map[string]interface{} `json:"filter"`
+	Columns PermissionColumns      `json:"columns"`
+	Filter  IBoolExp               `json:"filter"`
+	Check   IBoolExp               `json:"check,omitempty"`
+	Set     map[string]interface{} `json:"set,omitempty"`
 }
 
 type DeletePermission struct {
-	Role       string           `json:"role,omitempty"`
-	Permission PermissionDelete `json:"permission,omitempty"`
+	Filter IBoolExp `json:"filter"`
 }
 
 type ForeignKeyConstraintOn struct {
@@ -154,7 +136,98 @@ type RemoteSchemas struct {
 // 	RemoteSchemas []*RemoteSchemas `json:"remote_schemas"`
 // }
 
-// MANUAL IMPLEMENTATIONS
+// HAND-CRAFTED IMPLEMENTATIONS
+type PermissionColumns interface {
+	GetColumns() interface{}
+}
+
+type All struct{}
+
+func (All) GetColumns() interface{} {
+	return "*"
+}
+
+type PGColumns []string
+
+func (c PGColumns) GetColumns() interface{} {
+	return c
+}
+
+type IBoolExp interface {
+	GetBoolExp() interface{}
+}
+
+// AndExp | OrExp | NotExp | ExistsExp | TrueExp | ColumnExp
+type AndExp struct {
+	And []IBoolExp `json:"$and"`
+}
+
+type OrExp struct {
+	Or []IBoolExp `json:"$or"`
+}
+
+type NotExp struct {
+	Not IBoolExp `json:"$not"`
+}
+
+type ExistsExp struct {
+	Exists struct {
+		Table ITableName `json:"_table"`
+		Where IBoolExp   `json:"_where"`
+	} `json:"$exists"`
+}
+
+type TrueExp struct{}
+
+type Operator string
+
+const (
+	EqOperator  Operator = "$eq"
+	NeqOperator Operator = "$ne"
+	LtOperator  Operator = "$lt"
+	LteOperator Operator = "$lte"
+	GtOperator  Operator = "$gt"
+	GteOperator Operator = "$gte"
+	InOperator  Operator = "$in"
+	NinOperator Operator = "$nin"
+
+	LikeOperator     Operator = "$like"
+	NLikeOperator    Operator = "$nlike"
+	ILikeOperator    Operator = "$ilike"
+	NILikeOperator   Operator = "$nilike"
+	SimilarOperator  Operator = "$similar"
+	NSimilarOperator Operator = "$nsimilar"
+	RegexOperator    Operator = "$regex"
+	NRegexOperator   Operator = "$nregex"
+	IRegexOperator   Operator = "$iregex"
+	NIRegexOperator  Operator = "$niregex"
+)
+
+type ColumnExp map[string]map[Operator]interface{}
+
+func (a AndExp) GetBoolExp() interface{} {
+	return a
+}
+
+func (a OrExp) GetBoolExp() interface{} {
+	return a
+}
+
+func (n NotExp) GetBoolExp() interface{} {
+	return n
+}
+
+func (e ExistsExp) GetBoolExp() interface{} {
+	return e
+}
+
+func (t TrueExp) GetBoolExp() interface{} {
+	return t
+}
+
+func (c ColumnExp) GetBoolExp() interface{} {
+	return c
+}
 
 type (
 	TableName        string
@@ -163,6 +236,7 @@ type (
 	SameTable        string
 	PGColumn         string
 	InsertOrder      string
+	RoleName         string
 )
 
 type ITableName interface {
@@ -213,12 +287,6 @@ type ObjRelUsingManualMapping struct {
 type ObjRelUsing struct {
 	ForeignKeyConstraintOn *IObjRelUsingChoice       `json:"foreign_key_constraint_on,omitempty"`
 	ManualConfiguration    *ObjRelUsingManualMapping `json:"manual_configuration,omitempty"`
-}
-
-type PgTrackTableArgs struct {
-	Table         ITableName          `json:"table"`
-	Configuration *TableConfiguration `json:"configuration,omitempty"`
-	Source        SourceName          `json:"source"`
 }
 
 type ArrRelUsingFKeyOn struct {
