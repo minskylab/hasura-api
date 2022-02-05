@@ -9,9 +9,14 @@ import (
 )
 
 type HasuraClient struct {
-	Client      *resty.Client
-	Config      *HasuraConfig
-	adminSecret string
+	MetadataClient *MetadataClient
+	client         *resty.Client
+	Config         *HasuraConfig
+	adminSecret    string
+}
+
+type MetadataClient struct {
+	HasuraClient
 }
 
 type HasuraClientOptions struct {
@@ -51,9 +56,15 @@ func NewHasuraClient(options ...HasuraClientOption) (*HasuraClient, error) {
 
 	adminSecret := config.Getenv("HASURA_GRAPHQL_ADMIN_SECRET", "")
 
-	return &HasuraClient{
-		Client:      resty.New(),
+	client := &HasuraClient{
+		client:      resty.New(),
 		adminSecret: adminSecret,
 		Config:      conf,
-	}, nil
+	}
+
+	client.MetadataClient = &MetadataClient{
+		HasuraClient: *client,
+	}
+
+	return client, nil
 }

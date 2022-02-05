@@ -7,10 +7,10 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (r *HasuraClient) genericHasuraQuery(body metadata.MetadataQuery) (metadata.MetadataResponse, error) {
+func (r *MetadataClient) genericHasuraQuery(body metadata.MetadataQuery) (metadata.MetadataResponse, error) {
 	endpoint := fmt.Sprintf("%s/v1/metadata", r.Config.Endpoint)
 
-	res, err := r.Client.R().
+	res, err := r.client.R().
 		SetHeaders(map[string]string{
 			"Content-Type":          "application/json",
 			"X-Hasura-Role":         "admin",
