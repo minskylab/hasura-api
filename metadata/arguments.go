@@ -68,11 +68,11 @@ type PgAddComputedFieldArgs struct{}
 type PgDropComputedFieldArgs struct{}
 
 type PgCreateInsertPermissionArgs struct {
-	Table      ITableName       `json:"table"`
-	Role       string           `json:"role"`
-	Permission InsertPermission `json:"permission"`
-	Comment    string           `json:"comment,omitempty"`
-	Source     string           `json:"source,omitempty"`
+	Table      ITableName        `json:"table"`
+	Role       string            `json:"role"`
+	Permission IInsertPermission `json:"permission"`
+	Comment    string            `json:"comment,omitempty"`
+	Source     string            `json:"source,omitempty"`
 }
 
 type PgDropInsertPermissionArgs struct {
@@ -82,11 +82,11 @@ type PgDropInsertPermissionArgs struct {
 }
 
 type PgCreateSelectPermissionArgs struct {
-	Table      ITableName       `json:"table"`
-	Role       string           `json:"role"`
-	Permission SelectPermission `json:"permission"`
-	Comment    string           `json:"comment,omitempty"`
-	Source     string           `json:"source,omitempty"`
+	Table      ITableName        `json:"table"`
+	Role       string            `json:"role"`
+	Permission ISelectPermission `json:"permission"`
+	Comment    string            `json:"comment,omitempty"`
+	Source     string            `json:"source,omitempty"`
 }
 
 type PgDropSelectPermissionArgs struct {
@@ -96,11 +96,11 @@ type PgDropSelectPermissionArgs struct {
 }
 
 type PgCreateUpdatePermissionArgs struct {
-	Table      ITableName       `json:"table"`
-	Role       string           `json:"role"`
-	Permission UpdatePermission `json:"permission"`
-	Comment    string           `json:"comment,omitempty"`
-	Source     string           `json:"source,omitempty"`
+	Table      ITableName        `json:"table"`
+	Role       string            `json:"role"`
+	Permission IUpdatePermission `json:"permission"`
+	Comment    string            `json:"comment,omitempty"`
+	Source     string            `json:"source,omitempty"`
 }
 
 type PgDropUpdatePermissionArgs struct {
@@ -110,11 +110,11 @@ type PgDropUpdatePermissionArgs struct {
 }
 
 type PgCreateDeletePermissionArgs struct {
-	Table      ITableName       `json:"table"`
-	Role       string           `json:"role"`
-	Permission DeletePermission `json:"permission"`
-	Comment    string           `json:"comment,omitempty"`
-	Source     string           `json:"source,omitempty"`
+	Table      ITableName        `json:"table"`
+	Role       string            `json:"role"`
+	Permission IDeletePermission `json:"permission"`
+	Comment    string            `json:"comment,omitempty"`
+	Source     string            `json:"source,omitempty"`
 }
 
 type PgDropDeletePermissionArgs struct {

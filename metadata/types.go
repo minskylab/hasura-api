@@ -294,3 +294,53 @@ type ArrRelUsing struct {
 	ForeignKeyConstraintOn *ArrRelUsingFKeyOn        `json:"foreign_key_constraint_on,omitempty"`
 	ManualConfiguration    *ArrRelUsingManualMapping `json:"manual_configuration,omitempty"`
 }
+
+type GenericPermission map[string]interface{}
+
+type IInsertPermission interface {
+	GetInsertPermission() interface{}
+}
+
+func (p InsertPermission) GetInsertPermission() interface{} {
+	return p
+}
+
+type ISelectPermission interface {
+	GetSelectPermission() interface{}
+}
+
+func (p SelectPermission) GetSelectPermission() interface{} {
+	return p
+}
+
+type IUpdatePermission interface {
+	GetUpdatePermission() interface{}
+}
+
+func (p UpdatePermission) GetUpdatePermission() interface{} {
+	return p
+}
+
+type IDeletePermission interface {
+	GetDeletePermission() interface{}
+}
+
+func (p DeletePermission) GetDeletePermission() interface{} {
+	return p
+}
+
+func (g GenericPermission) GetInsertPermission() interface{} {
+	return g
+}
+
+func (g GenericPermission) GetSelectPermission() interface{} {
+	return g
+}
+
+func (g GenericPermission) GetUpdatePermission() interface{} {
+	return g
+}
+
+func (g GenericPermission) GetDeletePermission() interface{} {
+	return g
+}
