@@ -1,5 +1,7 @@
 package metadata
 
+type MetadataResponses []MetadataResponse
+
 type MetadataResponse interface {
 	GetResponse() interface{}
 }
