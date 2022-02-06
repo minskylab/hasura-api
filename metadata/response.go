@@ -1,7 +1,5 @@
 package metadata
 
-type MetadataResponses []MetadataResponse
-
 type MetadataResponse interface {
 	GetResponse() interface{}
 }
@@ -34,5 +32,11 @@ type InternalServerErrorResponse struct {
 }
 
 func (r InternalServerErrorResponse) GetResponse() interface{} {
+	return r
+}
+
+type MetadataResponses []MetadataResponse
+
+func (r MetadataResponses) GetResponse() interface{} {
 	return r
 }
