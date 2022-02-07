@@ -63,14 +63,8 @@ type DeletePermission struct {
 	Filter IBoolExp `json:"filter"`
 }
 
-type ForeignKeyConstraintOn struct {
-	Column          string     `json:"column,omitempty"`
-	ExcludedColumns []string   `json:"excluded_columns,omitempty"`
-	Table           ITableName `json:"table,omitempty"`
-}
-
 type UsingArray struct {
-	ForeignKeyConstraintOn ForeignKeyConstraintOn `json:"foreign_key_constraint_on"`
+	ForeignKeyConstraintOn RemoteTable `json:"foreign_key_constraint_on"`
 }
 
 // func (u UsingArray) Get
