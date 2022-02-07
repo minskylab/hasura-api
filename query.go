@@ -25,7 +25,7 @@ func (r *MetadataClient) genericHasuraQuery(body metadata.MetadataQuery) (metada
 		return nil, errors.WithStack(err)
 	}
 
-	return metadata.RestyResponse(*res), nil
+	return metadata.RestyResponse{Response: res}, nil
 
 	// switch res.StatusCode() {
 	// case 200, 201:

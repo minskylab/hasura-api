@@ -51,7 +51,9 @@ func (r MetadataResponses) GetResponse() interface{} {
 	return r
 }
 
-type RestyResponse resty.Response
+type RestyResponse struct {
+	*resty.Response
+}
 
 func (r RestyResponse) GetResponse() interface{} {
 	return r
