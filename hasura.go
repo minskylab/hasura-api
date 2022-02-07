@@ -12,6 +12,7 @@ type HasuraClient struct {
 	Metadata    *MetadataClient
 	client      *resty.Client
 	Config      *HasuraConfig
+	Debug       bool
 	adminSecret string
 }
 
@@ -22,8 +23,8 @@ type MetadataClient struct {
 type HasuraClientOptions struct {
 	configFilepaths []string
 	envFilepaths    []string
-
-	literals struct {
+	debug           bool
+	literals        struct {
 		endpoint    string
 		adminSecret string
 	}
@@ -50,6 +51,12 @@ func WithLiterals(hasuraEndpoint, hasuraAdminSecret string) HasuraClientOption {
 	}
 }
 
+func WithDebug(debug bool) HasuraClientOption {
+	return func(options *HasuraClientOptions) {
+		options.debug = debug
+	}
+}
+
 func newHasuraClientWithLiterals(hasuraEndpoint, hasuraAdminSecret string) (*HasuraClient, error) {
 	client := &HasuraClient{
 		client:      resty.New(),
@@ -67,21 +74,21 @@ func newHasuraClientWithLiterals(hasuraEndpoint, hasuraAdminSecret string) (*Has
 }
 
 func NewHasuraClient(options ...HasuraClientOption) (*HasuraClient, error) {
-	optionsStruct := new(HasuraClientOptions)
+	opts := new(HasuraClientOptions)
 
 	for _, opt := range options {
-		opt(optionsStruct)
+		opt(opts)
 	}
 
-	if optionsStruct.literals.endpoint != "" && optionsStruct.literals.adminSecret != "" {
-		return newHasuraClientWithLiterals(optionsStruct.literals.endpoint, optionsStruct.literals.adminSecret)
+	if opts.literals.endpoint != "" && opts.literals.adminSecret != "" {
+		return newHasuraClientWithLiterals(opts.literals.endpoint, opts.literals.adminSecret)
 	}
 
-	if err := godotenv.Load(optionsStruct.envFilepaths...); err != nil {
+	if err := godotenv.Load(opts.envFilepaths...); err != nil {
 		logrus.Warn("Error loading .env file", err)
 	}
 
-	conf, err := ConfigFromFile(optionsStruct.configFilepaths...)
+	conf, err := ConfigFromFile(opts.configFilepaths...)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -90,6 +97,7 @@ func NewHasuraClient(options ...HasuraClientOption) (*HasuraClient, error) {
 
 	client := &HasuraClient{
 		client:      resty.New(),
+		Debug:       opts.debug,
 		adminSecret: adminSecret,
 		Config:      conf,
 	}

@@ -5,10 +5,13 @@ import (
 
 	"github.com/minskylab/hasura-api/metadata"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 func (r *MetadataClient) genericHasuraQuery(body metadata.MetadataQuery) (metadata.MetadataResponse, error) {
 	endpoint := fmt.Sprintf("%s/v1/metadata", r.Config.Endpoint)
+
+	logrus.Debug("requesting to hasura metadata query: ", body.Type)
 
 	res, err := r.client.R().
 		SetHeaders(map[string]string{
@@ -19,15 +22,11 @@ func (r *MetadataClient) genericHasuraQuery(body metadata.MetadataQuery) (metada
 		SetBody(body).
 		Post(endpoint)
 	if err != nil {
-		// logrus.Warn(errors.WithStack(err))
-		// logrus.Warn("response: ", res.StatusCode(), " ", res.String())
-		// return nil
 		return nil, errors.WithStack(err)
 	}
 
-	// logrus.Debug("response: ", res.StatusCode(), " ", res.String())
 	switch res.StatusCode() {
-	case 200:
+	case 200, 201:
 		switch successRes := res.Result().(type) {
 		case metadata.SuccessResponse:
 			return successRes, nil
@@ -56,33 +55,7 @@ func (r *MetadataClient) genericHasuraQuery(body metadata.MetadataQuery) (metada
 			return nil, errors.Errorf("unexpected internal server error response: %v", res.Result())
 		}
 	default:
-		return nil, errors.Errorf("unexpected response: %v", res.Result())
+		logrus.Warnf("unexpected response (code: %d): %v", res.StatusCode(), res.Result())
+		return res.Result().(metadata.MetadataResponse), nil
 	}
 }
-
-// func (r *HasuraClient) genericHasuraBulkQuery(bodies []metadata.MetadataQuery) error {
-// 	endpoint := fmt.Sprintf("%s/v1/metadata", r.Config.Endpoint)
-
-// 	body := metadata.MetadataQuery{
-// 		Type: "bulk",
-// 		Args: bodies,
-// 	}
-
-// 	res, err := r.Client.R().
-// 		SetHeaders(map[string]string{
-// 			"Content-Type":          "application/json",
-// 			"X-Hasura-Role":         "admin",
-// 			"X-Hasura-Admin-Secret": r.adminSecret,
-// 		}).
-// 		SetBody(body).
-// 		Post(endpoint)
-// 	if err != nil {
-// 		logrus.Warn(errors.WithStack(err))
-// 		logrus.Warn("response: ", res.StatusCode(), " ", res.String())
-// 		return nil
-// 	}
-
-// 	logrus.Debug("response: ", res.StatusCode(), " ", res.String())
-
-// 	return nil
-// }
