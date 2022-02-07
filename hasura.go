@@ -1,6 +1,8 @@
 package hasura_api
 
 import (
+	"time"
+
 	"github.com/go-resty/resty/v2"
 	"github.com/gookit/config/v2"
 	"github.com/joho/godotenv"
@@ -24,6 +26,7 @@ type HasuraClientOptions struct {
 	configFilepaths []string
 	envFilepaths    []string
 	debug           bool
+	timeout         time.Duration
 	literals        struct {
 		endpoint    string
 		adminSecret string
@@ -54,6 +57,12 @@ func WithLiterals(hasuraEndpoint, hasuraAdminSecret string) HasuraClientOption {
 func WithDebug(debug bool) HasuraClientOption {
 	return func(options *HasuraClientOptions) {
 		options.debug = debug
+	}
+}
+
+func WithTimeout(timeout time.Duration) HasuraClientOption {
+	return func(options *HasuraClientOptions) {
+		options.timeout = timeout
 	}
 }
 
@@ -100,6 +109,12 @@ func NewHasuraClient(options ...HasuraClientOption) (*HasuraClient, error) {
 		Debug:       opts.debug,
 		adminSecret: adminSecret,
 		Config:      conf,
+	}
+
+	client.client.SetTimeout(10 * time.Minute)
+
+	if opts.timeout != time.Duration(0) {
+		client.client.SetTimeout(opts.timeout)
 	}
 
 	client.Metadata = &MetadataClient{
