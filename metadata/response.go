@@ -1,5 +1,9 @@
 package metadata
 
+import (
+	"github.com/go-resty/resty/v2"
+)
+
 type MetadataResponse interface {
 	GetResponse() interface{}
 }
@@ -44,5 +48,11 @@ func (r InternalServerErrorResponse) GetResponse() interface{} {
 type MetadataResponses []MetadataResponse
 
 func (r MetadataResponses) GetResponse() interface{} {
+	return r
+}
+
+type RestyResponse resty.Response
+
+func (r RestyResponse) GetResponse() interface{} {
 	return r
 }
