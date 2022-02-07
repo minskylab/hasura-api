@@ -4,9 +4,15 @@ type MetadataResponse interface {
 	GetResponse() interface{}
 }
 
-type SuccessResponse map[string]interface{}
+type ArrayResponse []interface{}
 
-func (r SuccessResponse) GetResponse() interface{} {
+func (r ArrayResponse) GetResponse() interface{} {
+	return r
+}
+
+type ObjectResponse map[string]interface{}
+
+func (r ObjectResponse) GetResponse() interface{} {
 	return r
 }
 

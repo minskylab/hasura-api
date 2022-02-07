@@ -28,29 +28,29 @@ func (r *MetadataClient) genericHasuraQuery(body metadata.MetadataQuery) (metada
 	switch res.StatusCode() {
 	case 200, 201:
 		switch successRes := res.Result().(type) {
-		case metadata.SuccessResponse:
-			return successRes, nil
+		case metadata.ObjectResponse, metadata.ArrayResponse:
+			return successRes.(metadata.MetadataResponse), nil
 		default:
 			return nil, errors.Errorf("unexpected success response: %v", res.Result())
 		}
 	case 400:
 		switch badRequestRes := res.Result().(type) {
-		case metadata.BadRequestResponse:
-			return badRequestRes, nil
+		case metadata.BadRequestResponse, metadata.ArrayResponse:
+			return badRequestRes.(metadata.MetadataResponse), nil
 		default:
 			return nil, errors.Errorf("unexpected bad request response: %v", res.Result())
 		}
 	case 401:
 		switch unauthorizedRes := res.Result().(type) {
-		case metadata.UnauthorizedResponse:
-			return unauthorizedRes, nil
+		case metadata.UnauthorizedResponse, metadata.ArrayResponse:
+			return unauthorizedRes.(metadata.MetadataResponse), nil
 		default:
 			return nil, errors.Errorf("unexpected unauthorized response: %v", res.Result())
 		}
 	case 500:
 		switch internalServerErrorRes := res.Result().(type) {
-		case metadata.InternalServerErrorResponse:
-			return internalServerErrorRes, nil
+		case metadata.InternalServerErrorResponse, metadata.ArrayResponse:
+			return internalServerErrorRes.(metadata.MetadataResponse), nil
 		default:
 			return nil, errors.Errorf("unexpected internal server error response: %v", res.Result())
 		}

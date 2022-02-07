@@ -28,7 +28,7 @@ func main() {
 	}
 
 	switch res := res.(type) {
-	case metadata.SuccessResponse:
+	case metadata.ObjectResponse:
 		fmt.Println(res)
 	case metadata.BadRequestResponse,
 		metadata.UnauthorizedResponse,
@@ -45,7 +45,7 @@ func main() {
 	}
 
 	switch res := res.(type) {
-	case metadata.SuccessResponse:
+	case metadata.ObjectResponse:
 		fmt.Println(res)
 	case metadata.BadRequestResponse,
 		metadata.UnauthorizedResponse,
