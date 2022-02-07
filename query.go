@@ -11,7 +11,7 @@ import (
 func (r *MetadataClient) genericHasuraQuery(body metadata.MetadataQuery) (metadata.MetadataResponse, error) {
 	endpoint := fmt.Sprintf("%s/v1/metadata", r.Config.Endpoint)
 
-	logrus.Debug("requesting to hasura metadata query: ", body.Type)
+	logrus.Debug("sending hasura metadata query: ", body.Type)
 
 	res, err := r.client.R().
 		SetHeaders(map[string]string{

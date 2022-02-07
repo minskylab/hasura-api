@@ -3,7 +3,7 @@ package metadata
 type MetadataRequestType string
 
 const (
-	BulkType                       MetadataRequestType = "create_type"
+	BulkType                       MetadataRequestType = "bulk"
 	PgAddSource                    MetadataRequestType = "pg_add_source"
 	PgDropSource                   MetadataRequestType = "pg_drop_source"
 	PgTrackTable                   MetadataRequestType = "pg_track_table"
