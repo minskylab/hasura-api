@@ -2,6 +2,10 @@
 
 An unofficial API based on [Hasura API Reference](https://hasura.io/docs/latest/graphql/core/api-reference/index.html).
 
+```
+WARNING: This project is in a very early stage. Don't use in production.
+```
+
 ## Use Example
 
 ```go
